@@ -8,6 +8,7 @@ import {
   Home,
   DollarSign,
   UserCheck,
+  Palette,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,8 +20,11 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { ThemeMenuItems } from '@/components/ui/theme-toggle';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import type { UserType } from '@/types';
@@ -78,13 +82,8 @@ export const SidebarNav = () => {
   const NavContent = () => (
     <div className="flex flex-col h-full bg-background">
       <div className="px-6 py-4 border-b border-border">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-bold text-foreground">Call Agent AI</h2>
-            <p className="text-sm text-muted-foreground">Affiliate Portal</p>
-          </div>
-          <ThemeToggle />
-        </div>
+        <h2 className="text-lg font-bold text-foreground">Call Agent AI</h2>
+        <p className="text-sm text-muted-foreground">Affiliate Portal</p>
       </div>
 
       <nav className="flex-1 px-4 py-4 space-y-1">
@@ -138,6 +137,15 @@ export const SidebarNav = () => {
                 Profile
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className="flex items-center gap-2">
+                <Palette className="mr-2 h-4 w-4" />
+                Theme
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <ThemeMenuItems />
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={signout} className="text-destructive">
               <LogOut className="mr-2 h-4 w-4" />
@@ -151,26 +159,23 @@ export const SidebarNav = () => {
 
   return (
     <>
-      <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
+      <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col bg-background border-r border-border">
         <NavContent />
       </div>
 
       <div className="lg:hidden">
         <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-background">
           <h2 className="text-lg font-bold">Call Agent AI</h2>
-          <div className="flex items-center space-x-2">
-            <ThemeToggle />
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="p-0 w-64">
-                <NavContent />
-              </SheetContent>
-            </Sheet>
-          </div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 w-64">
+              <NavContent />
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </>

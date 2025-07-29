@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -33,7 +34,9 @@ type SigninFormData = z.infer<typeof signinSchema>;
 
 export const SigninForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { signin, isLoading } = useAuth();
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const { signin, isLoading, user, getRedirectPath } = useAuth();
+  const navigate = useNavigate();
 
   const form = useForm<SigninFormData>({
     resolver: zodResolver(signinSchema),
@@ -43,10 +46,18 @@ export const SigninForm = () => {
     },
   });
 
+  useEffect(() => {
+    if (shouldRedirect && user) {
+      navigate(getRedirectPath());
+      setShouldRedirect(false);
+    }
+  }, [shouldRedirect, user, navigate, getRedirectPath]);
+
   const onSubmit = async (data: SigninFormData) => {
     try {
       await signin(data);
       toast.success('Welcome back!');
+      setShouldRedirect(true);
     } catch (error) {
       const apiError = error as ApiError;
       toast.error(apiError.message || 'Failed to sign in');
