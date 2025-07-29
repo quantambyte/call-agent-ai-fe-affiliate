@@ -40,10 +40,12 @@ export const OrganizationsPage = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [industryFilter, setIndustryFilter] = useState<string>('all');
 
-  const { data: organizations = [], isLoading } = useQuery({
-    queryKey: ['affiliate', 'organizations'],
-    queryFn: affiliateService.getOrganizations,
+  const { data: affiliate, isLoading } = useQuery({
+    queryKey: ['affiliate', 'profile'],
+    queryFn: affiliateService.getProfile,
   });
+
+  const organizations = affiliate?.organizations || [];
 
   const filteredOrganizations = organizations.filter((organization) => {
     const matchesSearch =
@@ -245,7 +247,9 @@ export const OrganizationsPage = () => {
                       {organization.customCommissionRate && (
                         <p className="text-sm font-medium text-primary">
                           Custom Rate:{' '}
-                          {(organization.customCommissionRate * 100).toFixed(1)}
+                          {(
+                            Number(organization.customCommissionRate) * 100
+                          ).toFixed(1)}
                           %
                         </p>
                       )}

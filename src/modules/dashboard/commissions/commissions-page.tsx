@@ -53,28 +53,22 @@ export const CommissionsPage = () => {
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { data: commissions = [], isLoading } = useQuery({
-    queryKey: [
-      'affiliate',
-      'commissions',
-      selectedYear,
-      statusFilter,
-      typeFilter,
-    ],
-    queryFn: () =>
-      affiliateService.getCommissions({
-        year: selectedYear,
-        status: statusFilter === 'all' ? undefined : statusFilter,
-        type: typeFilter === 'all' ? undefined : typeFilter,
-      }),
+  const { data: affiliate, isLoading } = useQuery({
+    queryKey: ['affiliate', 'profile'],
+    queryFn: affiliateService.getProfile,
   });
 
-  const { data: commissionSummary, isLoading: summaryLoading } = useQuery({
-    queryKey: ['affiliate', 'commission-summary', selectedYear],
-    queryFn: () => affiliateService.getCommissionSummary(selectedYear),
-  });
+  const commissions = affiliate?.commissions || [];
 
   const filteredCommissions = commissions.filter((commission) => {
+    const commissionYear = new Date(commission.createdAt).getFullYear();
+    const matchesYear = commissionYear === selectedYear;
+
+    const matchesStatus =
+      statusFilter === 'all' || commission.status === statusFilter;
+    const matchesType =
+      typeFilter === 'all' || commission.commissionType === typeFilter;
+
     const matchesSearch =
       commission.organization?.name
         .toLowerCase()
@@ -83,36 +77,49 @@ export const CommissionsPage = () => {
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
 
-    return matchesSearch;
+    return matchesYear && matchesStatus && matchesType && matchesSearch;
   });
+
+  const totalCommissionsEarned = filteredCommissions.reduce(
+    (sum, commission) => sum + Number(commission.commissionAmount || 0),
+    0
+  );
+
+  const paidCommissions = filteredCommissions
+    .filter((c) => c.status === 'PAID')
+    .reduce(
+      (sum, commission) => sum + Number(commission.commissionAmount || 0),
+      0
+    );
+
+  const pendingCommissions = filteredCommissions
+    .filter((c) => c.status !== 'PAID')
+    .reduce(
+      (sum, commission) => sum + Number(commission.commissionAmount || 0),
+      0
+    );
 
   const stats = [
     {
       title: 'Total Earnings',
-      value: commissionSummary?.totalCommissionsEarned
-        ? `$${commissionSummary.totalCommissionsEarned.toFixed(2)}`
-        : '$0.00',
+      value: `$${totalCommissionsEarned.toFixed(2)}`,
       description: `Total for ${selectedYear}`,
       icon: DollarSign,
-      loading: summaryLoading,
+      loading: isLoading,
     },
     {
       title: 'Paid Commissions',
-      value: commissionSummary?.totalCommissionsPaid
-        ? `$${commissionSummary.totalCommissionsPaid.toFixed(2)}`
-        : '$0.00',
+      value: `$${paidCommissions.toFixed(2)}`,
       description: 'Received payments',
       icon: Calendar,
-      loading: summaryLoading,
+      loading: isLoading,
     },
     {
       title: 'Pending Commissions',
-      value: commissionSummary?.totalCommissionsPending
-        ? `$${commissionSummary.totalCommissionsPending.toFixed(2)}`
-        : '$0.00',
+      value: `$${pendingCommissions.toFixed(2)}`,
       description: 'Awaiting payment',
       icon: Calendar,
-      loading: summaryLoading,
+      loading: isLoading,
     },
   ];
 
@@ -289,13 +296,13 @@ export const CommissionsPage = () => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        ${commission.organizationRevenue.toFixed(2)}
+                        ${Number(commission.organizationRevenue).toFixed(2)}
                       </TableCell>
                       <TableCell>
-                        {(commission.commissionRate * 100).toFixed(1)}%
+                        {(Number(commission.commissionRate) * 100).toFixed(1)}%
                       </TableCell>
                       <TableCell className="font-medium">
-                        ${commission.commissionAmount.toFixed(2)}
+                        ${Number(commission.commissionAmount).toFixed(2)}
                       </TableCell>
                       <TableCell>
                         <Badge

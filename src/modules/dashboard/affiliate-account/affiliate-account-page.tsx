@@ -304,7 +304,7 @@ export const AffiliateAccountPage = () => {
                 Default Commission Rate
               </Label>
               <p className="text-sm mt-1 font-medium">
-                {(affiliate.defaultCommissionRate * 100).toFixed(1)}%
+                {(Number(affiliate.defaultCommissionRate) * 100).toFixed(1)}%
               </p>
             </div>
             <div>
@@ -312,7 +312,7 @@ export const AffiliateAccountPage = () => {
                 Account Balance
               </Label>
               <p className="text-sm mt-1 font-medium text-primary">
-                ${affiliate.accountBalance.toFixed(2)}
+                ${Number(affiliate.accountBalance).toFixed(2)}
               </p>
             </div>
             <div>

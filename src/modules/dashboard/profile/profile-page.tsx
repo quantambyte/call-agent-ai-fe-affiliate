@@ -277,53 +277,6 @@ export const ProfilePage = () => {
           </CardContent>
         </Card>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Account Permissions</CardTitle>
-          <CardDescription>
-            Your current access levels and permissions
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <p className="font-medium">Active Account</p>
-                <p className="text-sm text-muted-foreground">
-                  Account is active and functional
-                </p>
-              </div>
-              <div
-                className={`px-2 py-1 rounded text-xs font-medium ${
-                  user.isActive
-                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100'
-                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100'
-                }`}
-              >
-                {user.isActive ? 'Active' : 'Inactive'}
-              </div>
-            </div>
-            <div className="flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <p className="font-medium">Affiliate Access</p>
-                <p className="text-sm text-muted-foreground">
-                  Access to affiliate features
-                </p>
-              </div>
-              <div
-                className={`px-2 py-1 rounded text-xs font-medium ${
-                  user.isAffiliate
-                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100'
-                    : 'bg-muted text-muted-foreground'
-                }`}
-              >
-                {user.isAffiliate ? 'Enabled' : 'Disabled'}
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

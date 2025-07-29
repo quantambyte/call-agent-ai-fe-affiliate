@@ -17,6 +17,31 @@ export interface Affiliate {
   status: AffiliateStatus;
   createdAt: string;
   updatedAt: string;
+  organizations?: Organization[];
+  users?: Array<{
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    userType: string;
+    status: string;
+  }>;
+  commissions?: Commission[];
+  soldSubscriptions?: Array<{
+    id: string;
+    createdAt: string;
+    organization?: {
+      id: string;
+      name: string;
+      slug: string;
+      businessName: string;
+    };
+    plan?: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+  }>;
   _count?: {
     users: number;
     organizations: number;
