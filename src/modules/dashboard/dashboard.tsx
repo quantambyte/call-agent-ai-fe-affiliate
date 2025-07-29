@@ -1,5 +1,5 @@
-const Dashboard = () => {
-  return <div>Dashboard</div>;
-};
+import { DashboardOverview } from './overview/dashboard-overview';
 
-export default Dashboard;
+export const Dashboard = () => {
+  return <DashboardOverview />;
+};

@@ -1,5 +1,5 @@
-const Signin = () => {
-  return <div>Signin</div>;
-};
+import { SigninForm } from './components/signin-form';
 
-export default Signin;
+export const Signin = () => {
+  return <SigninForm />;
+};

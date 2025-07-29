@@ -1,13 +1,18 @@
 import { Outlet } from 'react-router';
-import Sidebar from './components/sidebar';
+import { ProtectedRoute } from '@/components/guards/protected-route';
+import { SidebarNav } from '@/components/navigation/sidebar-nav';
 
-const DashboardLayout = () => {
+export const DashboardLayout = () => {
   return (
-    <div>
-      <Sidebar />
-      <Outlet />
-    </div>
+    <ProtectedRoute allowedRoles={['AFFILIATE']}>
+      <div className="flex h-screen bg-background">
+        <SidebarNav />
+        <div className="flex-1 lg:ml-64">
+          <main className="flex-1 overflow-auto">
+            <Outlet />
+          </main>
+        </div>
+      </div>
+    </ProtectedRoute>
   );
 };
-
-export default DashboardLayout;
