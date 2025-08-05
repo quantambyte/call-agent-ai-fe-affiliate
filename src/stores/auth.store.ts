@@ -11,9 +11,10 @@ import type {
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       accessToken: null,
+      refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
       isHydrated: false,
@@ -23,14 +24,11 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoading: true });
           const authResponse = await authService.signin(credentials);
 
-          if (authResponse.user.userType !== 'AFFILIATE') {
-            throw new Error('Access denied. Affiliate access required.');
-          }
-
           setAuthToken(authResponse.accessToken);
           set({
             user: authResponse.user,
             accessToken: authResponse.accessToken,
+            refreshToken: authResponse.refreshToken || null,
             isAuthenticated: true,
             isLoading: false,
           });
@@ -45,6 +43,7 @@ export const useAuthStore = create<AuthStore>()(
         set({
           user: null,
           accessToken: null,
+          refreshToken: null,
           isAuthenticated: false,
           isLoading: false,
         });
@@ -65,29 +64,59 @@ export const useAuthStore = create<AuthStore>()(
         }
       },
 
+      refreshTokens: async () => {
+        try {
+          const { refreshToken } = get();
+          if (!refreshToken) {
+            throw new Error('No refresh token available');
+          }
+
+          const authResponse = await authService.refreshToken(refreshToken);
+
+          setAuthToken(authResponse.accessToken);
+          set({
+            user: authResponse.user,
+            accessToken: authResponse.accessToken,
+            refreshToken: authResponse.refreshToken || null,
+            isAuthenticated: true,
+          });
+        } catch (error) {
+          get().signout();
+          throw error;
+        }
+      },
+
       setUser: (user: User) => {
         set({ user, isAuthenticated: true });
       },
 
-      setToken: (token: string) => {
-        setAuthToken(token);
-        set({ accessToken: token, isAuthenticated: true });
+      setTokens: (accessToken: string, refreshToken: string) => {
+        setAuthToken(accessToken);
+        set({ accessToken, refreshToken, isAuthenticated: true });
       },
 
-      setHydrated: (hydrated: boolean) => {
-        set({ isHydrated: hydrated });
+      clearAuth: () => {
+        clearAuthToken();
+        set({
+          user: null,
+          accessToken: null,
+          refreshToken: null,
+          isAuthenticated: false,
+        });
+      },
+
+      _setHydrated: () => {
+        set({ isHydrated: true });
       },
     }),
     {
-      name: 'affiliate-auth-storage',
-      onRehydrateStorage: () => (state) => {
-        if (state) {
-          if (state.accessToken) {
-            setAuthToken(state.accessToken);
-          }
-          state.setHydrated(true);
-        }
-      },
+      name: 'auth-storage',
+      partialize: (state) => ({
+        user: state.user,
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
 );

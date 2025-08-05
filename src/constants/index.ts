@@ -10,6 +10,9 @@ export const ROUTES = {
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
+export const TOKEN_STORAGE_KEY = 'affiliate_auth_token';
+export const USER_STORAGE_KEY = 'affiliate_auth_user';
+
 export const INDUSTRY_TYPES = [
   { value: 'DENTAL', label: 'Dental' },
   { value: 'WELLNESS', label: 'Wellness' },

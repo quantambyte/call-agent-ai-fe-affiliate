@@ -16,6 +16,14 @@ export const authService = {
     return response.data.data;
   },
 
+  async refreshToken(refreshToken: string): Promise<AuthResponse> {
+    const response = await api.post<ApiResponse<AuthResponse>>(
+      '/auth/refresh',
+      { refreshToken }
+    );
+    return response.data.data;
+  },
+
   async getProfile(): Promise<User> {
     const response = await api.get<ApiResponse<User>>('/auth/profile');
     return response.data.data;

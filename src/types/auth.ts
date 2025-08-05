@@ -3,20 +3,23 @@ import type { UserType, UserStatus } from './common';
 export interface User {
   id: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
   userType: UserType;
   status: UserStatus;
-  affiliateId?: string;
   organizationId?: string;
-  createdAt: string;
-  updatedAt: string;
-  fullName?: string;
+  affiliateId?: string;
+  defaultAgentId?: string;
   isActive: boolean;
   isPlatformAdmin: boolean;
   isAffiliate: boolean;
   isOrgAdmin: boolean;
   isOrgMember: boolean;
+  organizationStatus?: string;
+  hasActiveSubscription?: boolean;
+  subscriptionStatus?: string;
+  canAccessDashboard: boolean;
 }
 
 export interface AuthResponse {
@@ -24,6 +27,7 @@ export interface AuthResponse {
   accessToken: string;
   refreshToken?: string;
   expiresIn: number;
+  refreshExpiresIn?: number;
 }
 
 export interface SigninRequest {
@@ -34,18 +38,22 @@ export interface SigninRequest {
 export interface UpdateProfileRequest {
   firstName?: string;
   lastName?: string;
+  password?: string;
 }
 
 export interface AuthStore {
   user: User | null;
   accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   isHydrated: boolean;
   signin: (credentials: SigninRequest) => Promise<void>;
   signout: () => void;
   updateProfile: (data: UpdateProfileRequest) => Promise<void>;
+  refreshTokens: () => Promise<void>;
   setUser: (user: User) => void;
-  setToken: (token: string) => void;
-  setHydrated: (hydrated: boolean) => void;
+  setTokens: (accessToken: string, refreshToken: string) => void;
+  clearAuth: () => void;
+  _setHydrated: () => void;
 }

@@ -10,6 +10,7 @@ export const useAuth = () => {
     signin,
     signout,
     updateProfile,
+    refreshTokens,
   } = useAuthStore();
 
   const hasRole = (requiredRole: UserType | UserType[]): boolean => {
@@ -43,6 +44,7 @@ export const useAuth = () => {
     signin,
     signout,
     updateProfile,
+    refreshTokens,
     hasRole,
     isAffiliate,
     canAccessRoute,
