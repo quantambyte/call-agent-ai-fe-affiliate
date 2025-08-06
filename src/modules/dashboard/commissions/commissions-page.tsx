@@ -30,6 +30,7 @@ import {
   COMMISSION_STATUS_OPTIONS,
   COMMISSION_TYPE_OPTIONS,
 } from '@/constants';
+import { CommissionInsightsWidget } from '@/components/commissions/commission-insights-widget';
 
 const getStatusBadgeVariant = (status: string) => {
   switch (status) {
@@ -198,6 +199,11 @@ export const CommissionsPage = () => {
           );
         })}
       </div>
+
+      <CommissionInsightsWidget
+        commissions={commissions || []}
+        isLoading={isLoading}
+      />
 
       <Card>
         <CardHeader>
