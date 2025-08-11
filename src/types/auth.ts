@@ -20,6 +20,8 @@ export interface User {
   hasActiveSubscription?: boolean;
   subscriptionStatus?: string;
   canAccessDashboard: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthResponse {
